@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Ajax Example</title>
+	<meta charset="utf-8" />
+    <style>
+        .table {display: table;}
+        .row {display: table-row;}
+        .cell {display: table-cell; padding: 5px;}
+        .label {text-align: right;}
+    </style>
+</head>
+
+<body>
+
+    <form id="fruitform" method="get" action="http://localhost:32942">
+        <div class="table">
+            <div class="row">
+                <div class="cell label">Bananas:</div>
+                <div class="cell"><input name="bananas" id="bananas" value="2" /></div>
+            </div>
+            <div class="row">
+                <div class="cell label">Apples:</div>
+                <div class="cell"><input name="apples" id="apples" value="5" /></div>
+            </div>
+            <div class="row">
+                <div class="cell label">Cherries:</div>
+                <div class="cell"><input name="cherries" id="cherries" value="20" /></div>
+            </div>
+            <div class="row">
+                <div class="cell label">Total:</div>
+                <div id="results" class="cell">0 items</div>
+            </div>
+        </div>
+        <button id="btnWebAPIMethodUseRoute" type="submit">Route Method</button>
+        <button id="btnWebAPIMethodUseURIParameters">URL parameters</button>
+        <button id="btnWebAPIMethodUseJSONParameter">JSON parameter</button>
+        <button id="btnWebAPIMethodUseJSONModelParameter">JSON Model Parameter</button>
+        <button id="btnWebAPIMethodUseCompositeParameters">Composite Parameters</button>
+    </form>
+
+    <script>
+        document.getElementById("btnWebAPIMethodUseRoute").onclick = handleButtonPress;
+        document.getElementById("btnWebAPIMethodUseURIParameters").onclick = handleButtonPress;
+        document.getElementById("btnWebAPIMethodUseJSONParameter").onclick = handleButtonPress;
+        document.getElementById("btnWebAPIMethodUseJSONModelParameter").onclick = handleButtonPress;
+        document.getElementById("btnWebAPIMethodUseCompositeParameters").onclick = handleButtonPress;
+
+        var httpRequest;
+        var dataFormat = "";
+
+        function handleButtonPress(e) {
+            e.preventDefault();
+
+            var form = document.getElementById("fruitform");
+
+            /******************************************/
+            /*                                        */
+            /* Call Web API using controller route.   */
+            /*                                        */
+            /******************************************/
+            if (e.target.id == "btnWebAPIMethodUseRoute") {
+                httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = handleResponse;
+                httpRequest.open("GET", "api/persons/CalcFruits/" + document.getElementById("bananas").value + "/" + document.getElementById("apples").value + "/" + document.getElementById("cherries").value);
+                httpRequest.send();
+                dataFormat = "Route";
+            }
+
+            /******************************************/
+            /*                                        */
+            /* Pass urlencoded format data to Web API.*/
+            /*                                        */
+            /******************************************/
+            if (e.target.id == "btnWebAPIMethodUseURIParameters") {
+                var formData = "";
+                var inputElements = document.getElementsByTagName("input");
+                for (var i = 0; i < inputElements.length; i++) {
+                    formData += inputElements[i].name + "="
+                                + inputElements[i].value + "&";
+                }
+
+                formData = formData.substring(0, formData.length - 1);
+
+                httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = handleResponse;
+                httpRequest.open("POST", "api/persons/CalculateItemsCount/?" + formData);
+                httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                httpRequest.send();
+                dataFormat = "urlencoded";
+            }
+
+            /******************************************/
+            /*                                        */
+            /* Pass JSON format data to Web API.      */
+            /*                                        */
+            /******************************************/
+            if (e.target.id == "btnWebAPIMethodUseJSONParameter") {
+                var formData = new Object();
+                var inputElements = document.getElementsByTagName("input");
+                for (var i = 0; i < inputElements.length; i++) {
+                    formData[inputElements[i].name] = inputElements[i].value;
+                }
+
+                httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = handleResponse;
+                httpRequest.open("POST", "api/persons/Calc");
+                httpRequest.setRequestHeader("Content-Type", "application/json");
+                httpRequest.send(JSON.stringify(formData));
+                dataFormat = "JSON";
+            }
+
+            /******************************************/
+            /*                                        */
+            /* Pass Model format data to Web API.     */
+            /*                                        */
+            /******************************************/
+            if (e.target.id == "btnWebAPIMethodUseJSONModelParameter") {
+                var formData = new Object();
+                var inputElements = document.getElementsByTagName("input");
+                for (var i = 0; i < inputElements.length; i++) {
+                    formData[inputElements[i].name] = inputElements[i].value;
+                }
+
+                httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = handleResponse;
+                httpRequest.open("POST", "api/persons/CalcFruits");
+                httpRequest.setRequestHeader("Content-Type", "application/json");
+                httpRequest.send(JSON.stringify(formData));
+                dataFormat = "JSON";
+            }
+
+            /******************************************/
+            /*                                        */
+            /* Pass Composite parameters to Web API.  */
+            /*                                        */
+            /******************************************/
+            if (e.target.id == "btnWebAPIMethodUseCompositeParameters") {
+                var formData = new Object();
+                var inputElements = document.getElementsByTagName("input");
+                for (var i = 0; i < inputElements.length; i++) {
+                    formData[inputElements[i].name] = inputElements[i].value;
+                }
+
+                httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = handleResponse;
+                httpRequest.open("POST", "api/persons/CalcFruitsByPeople/?" + "name=Apollo");
+                httpRequest.setRequestHeader("Content-Type", "application/json");
+                httpRequest.send(JSON.stringify(formData));
+                dataFormat = "Composite";
+            }
+        }
+
+        function handleResponse() {
+            if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                if (dataFormat == "urlencoded") {
+                    document.getElementById("results").innerHTML = httpRequest.responseText;
+                }
+                else if (dataFormat == "JSON") {
+                    document.getElementById("results").innerHTML = JSON.parse(httpRequest.responseText)["Total"];
+                }
+                else if (dataFormat == "Route") {
+                    document.getElementById("results").innerHTML = httpRequest.responseText;
+                }
+                else if (dataFormat == "Composite") {
+                    document.getElementById("results").innerHTML = httpRequest.responseText.replace("\"", "").replace("\"", "");
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>

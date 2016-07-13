@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+    <script src="CallAPI.js"></script>
+</head>
+<body>
+    <div>
+        <h2>All People</h2>
+        <ul id="products" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="txtName" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="pPeople" />
+        <div id="divFindPeople"></div>
+    </div>
+
+
+    <p>
+        <a href="AjaxExample.html" target="_blank">Fruit Page</a>
+        <br />
+        <a href="View/BezierCurveExample.html" target="_blank">Bezier Curve</a>
+        <br />
+        <a href="View/BezierQuadraticCurve.html" target="_blank">Bezier Quadratic Curve</a>
+        <br />
+        <a href="View/DragExample.html" target="_blank">Drag Example</a>
+        <br />
+        <a href="View/DragExampleDataTransfer.html" target="_blank">Drag Example Use DataTransfer</a>
+        <br />
+    </p>
+
+    <div>
+        <button>Apollo</button>
+        <button>Aphrodite</button>
+        <button id="btnAllPeople">All</button>
+        <button id="btnTS">Call Typescript Function</button>
+    </div>
+    <div id = "target">
+
+    </div>
+
+    <label for="divResponseHeader">Response Header:</label>
+    <div id="divResponseHeader">
+        
+    </div>
+
+    <br />
+
+    <label for="divAllResponseHeader">All Response Header:</label>
+    <div id="divAllResponseHeader">
+
+    </div>
+
+    <div id="divName"></div>
+    <div id="divGender"></div>
+
+    <b>All people:</b>
+    <br />
+    <div id="divAllPeople">
+
+    </div>
+
+    <div>
+        <a href="View/CSSExamples.html">CSS Demonstration</a>
+        <br />
+        <a href="View/BorderAndBackgroundExamples.html">CSS Border & Background Demonstration</a>
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+    var uri = 'api/persons/GetAllPeople/';
+    var queryParam = "";
+
+    function find() {
+        var httpRequest = new XMLHttpRequest;
+        httpRequest.onreadystatechange = handleResponse;
+        httpRequest.open("GET", "api/persons/GetPeopleByName/" + document.getElementById("txtName").value);
+        httpRequest.send();
+    }
+    var buttons = document.getElementsByTagName("button");
+    for (var i = 0; i < buttons.length; i++) {
+        if (buttons[i].id == "btnTS") {
+            continue;
+        }
+        buttons[i].onclick = handleButtonPress;
+
+    }
+
+    this.document.getElementById("btnTS").addEventListener("click", YY, true);
+    function YY(e) {
+        //var y = this.document.getElementById("btnAllPeople").innerHTML;
+        var a = document.getElementById("btnAllPeople").value;
+        XX(a);
+    }
+
+    function handleButtonPress(e) {
+        var httpRequest = new XMLHttpRequest;
+        httpRequest.onreadystatechange = handleResponse;
+        //   httpRequest.open("GET", "api/persons/GetPeopleByName/" + e.target.innerHTML + "/aa/bb");
+        if (e.target.id == "btnAllPeople") {
+            httpRequest.open("GET", "api/persons/GetAllPeople");
+        }
+        else {
+            httpRequest.open("GET", "api/persons/GetPeopleByName/" + e.target.innerHTML);
+        }
+        //httpRequest.open("GET", "api/persons/GetPeopleByName/?para1=apollo&para2=Male");
+        httpRequest.send();
+        queryParam = e.target.innerHTML;
+    }
+
+    function handleResponse(e){
+        if (e.target.readyState == XMLHttpRequest.DONE && e.target.status == 200) {
+            if (queryParam == "All") {
+                var strContent = "";
+                var objs = JSON.parse(e.target.responseText);
+                for (var i = 0; i < objs.length; i++) {
+                    strContent += objs[i].Name + " : " + objs[i].Gender + "<br />";
+                }
+                document.getElementById("divAllPeople").innerHTML = strContent;
+            }
+            else if (queryParam == "find") {
+                var obj = JSON.parse(e.target.responseText);
+                var strContent = obj.Name + " : " + obj.Gender + "<br />";
+                document.getElementById("divFindPeople").innerHTML = strContent;
+            }
+            else {
+                document.getElementById("target").innerHTML = e.target.responseText;
+                //document.getElementById("divResponseHeader").innerHTML = e.target.getResponseHeader("Content-Type");
+                //document.getElementById("divAllResponseHeader").innerHTML = e.target.getAllResponseHeaders();
+
+                var obj = JSON.parse(e.target.responseText);
+                document.getElementById("divName").innerHTML = obj.Name;
+                document.getElementById("divGender").innerHTML = obj.Gender;
+            }
+        }
+    }
+
+    </script>
+</body>
+</html>

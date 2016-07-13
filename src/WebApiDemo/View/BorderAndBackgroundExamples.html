@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Border</title>
+	<meta charset="utf-8" />
+    <style>
+        input {
+            outline: medium;
+            border-width: 2px;
+            border-style: dashed;
+            border-color: aqua;
+            padding: 2px;
+        }
+
+        input:focus {
+            outline: medium;
+            border-width: 2px;
+            border-style: dashed;
+            border-color: pink;
+            border-radius: 20px 20px;
+            padding: 2px;
+        }
+
+        p {
+            border: 10px double green;
+            background-color: lightcyan;
+            background-image: url(banana100.png);
+            background-size: 32px 32px;
+            background-repeat: space;
+            background-attachment: local;
+            background-origin: border-box;
+            background-clip: content-box;
+        }
+
+        #pp {
+             border: 10px double cyan;
+             box-shadow: 5px 4px 5px 2px gray;
+        }
+
+        #xp {
+            border: 10px double cyan;
+            box-shadow: 5px 4px 10px 2px gray, 4px 4px 6px gray inset;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" width="108" height="24" />
+
+    <p>
+        There are lots of different kinds of fruit - there are over 500 varieties of banana alone.
+        By the time we add the countless types of apples, oranges, and other well-known fruit, we are 
+        faced with thousands of choices.
+    </p>
+
+    <span>Shadow Example</span>
+    <p id="pp">
+        There are lots of different kinds of fruit - there are over 500 varieties of banana alone.
+        By the time we add the countless types of apples, oranges, and other well-known fruit, we are
+        faced with thousands of choices.
+    </p>
+    <p id="xp">
+        There are lots of different kinds of fruit - there are over 500 varieties of banana alone.
+        By the time we add the countless types of apples, oranges, and other well-known fruit, we are
+        faced with thousands of choices.
+    </p>
+
+    <a href="Outline.html" target="_blank">See Outline effect</a>
+    <br />
+    <a href="CSSBoxElementSize.html" target="_blank">Box Element Size Control</a>
+    <br />
+    <a href="ContentOverflow.html" target="_blank">Content Overflow Example</a>
+    <br />
+    <a href="InlineBlock.html" target="_blank">Inline Block Example</a>
+    <br />
+    <a href="Position1.html" target="_blank">Position Demo</a>
+    <br />
+    <a href="ZIndex.html" target="_blank">Z-Index Demo</a>
+    <br />
+    <a href="ColumnsLayout.html" target="_blank">Columns Layout Demo</a>
+    <br />
+    <a href="FlexBoxLayout.html" target="_blank">Flex Box Layout Demo</a>
+</body>
+</html>
